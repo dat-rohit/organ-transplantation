@@ -2,6 +2,8 @@
 //SPDX-License-Identifier: <SPDX-License>
 pragma solidity ^0.6.1;
 
+//todo: fonction processus de matching
+//todo: interface simple connecté
 
 contract DonorRecipientMatch {
 
