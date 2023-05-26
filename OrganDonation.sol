@@ -150,7 +150,56 @@ contract DonorRecipientMatch {
         return (recipients[_index].first_name, recipients[_index].last_name, recipients[_index].age, recipients[_index].blood_type, recipients[_index].height, recipients[_index].weight, recipients[_index].organ_type);
     }
 
-    
+
+
+    function compare(Donor memory d, Recipient memory r) internal pure returns (bool) {
+        if (keccak256(bytes(d.blood_type)) != keccak256(bytes(r.blood_type))) {
+            // Blood types don't match
+            return false;
+        }
+
+        if (d.age < r.age-10 || r.age+10<d.age) {
+            // age du donneur trop loin de celui du receveur
+            return false;
+        }
+
+        if (d.weight < r.weight-20 || d.weight > r.weight + 20) {
+            // Poids du donneur trop loin de celui du receveur
+            return false;
+        }
+
+        if (keccak256(bytes(d.organ_type)) != keccak256(bytes(r.organ_type))) {
+            // Organ types don't match
+            return false;
+        }
+
+        // All attributes match, it's a potential match
+        return true;
+    }
+
+
+
+    function match(uint donorId) public view returns(Recipient[] memory) {
+
+        Recipient[] memory matches = new Recipient[](recipientsCounter);
+        uint matchCount=0;
+
+        for (uint i = 0; i < recipientsCounter; i++) {
+            Recipient memory recipient = recipients[i];
+
+            if (compare(donors[donorId], recipient)) {
+                matches[matchCount] = recipient;
+                matchCount++;
+            }
+        }
+
+        assembly {
+            mstore(matches, matchCount)
+        }
+
+        return matches;
+
+    }
 
 
 }
