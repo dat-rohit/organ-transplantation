@@ -52,58 +52,52 @@ contract DonorRecipientMatch {
 
     }
 
-    function validateDonor(Donor _donor) public pure returns(string memory) {
+    function validateDonor(Donor memory _donor) public pure returns(uint) {
 
-        require(msg.sender=procurement_organization);   //Seul l'organisation chargé du matching donneur-receveur peut valider le patient en tant que donneur potentiel
+        //require(msg.sender=procurement_organization);   //Seul l'organisation chargé du matching donneur-receveur peut valider le patient en tant que donneur potentiel
 
         //Communication des infos du patient à l'organisation en charge de vérifier s'il peut être donneur potentiel. L'organisation renvoie s'il est éligible ou non
         //.... A implémenter dans le futur
         //
 
-        uint memory _status='1';        //Le status 1 indique que le patient est éligible, 0 sinon
+        uint _status=1;        //Le status 1 indique que le patient est éligible, 0 sinon
         return _status;
 
     }
 
-    function validateRecipient(Donor _recipient) public pure returns(string memory) {
+    function validateRecipient(Donor memory _recipient) public pure returns(uint) {
 
-        require(msg.sender==procurement_organization);   //Seul l'organisation chargé du matching donneur-receveur peut valider le patient en tant que receveur potentiel
+        //require(msg.sender==procurement_organization);   //Seul l'organisation chargé du matching donneur-receveur peut valider le patient en tant que receveur potentiel
 
         //Communication des infos du patient à l'organisation en charge de vérifier s'il peut être receveur potentiel. L'organisation renvoie s'il est éligible ou non
         //.... A implémenter dans le futur
         //
 
-        uint memory _status='1';        //Le status 1 indique que le patient est éligible, 0 sinon
+        uint _status=1;        //Le status 1 indique que le patient est éligible, 0 sinon
         return _status;
 
     }
 
-    function addRecipient(uint memory _id, string memory _first_name, string memory _last_name, string memory _blood_type, uint memory _age, uint memory _weight, uint memory _height, string _organ_type, string _hospital_location, uint _recipient_date, uint state) public {
+    function addRecipient(uint _id, string memory _firstname, string memory _lastname, string memory _bloodtype, uint _age, uint _weight, uint _height, string memory _organtype, string memory _hospitallocation, uint _recipientdate, uint _state) public {
         
-        require(msg.sender==recipient_hospital);     //Seul l'hopital du receveur peut utiliser la fonction d'ajout
+        //require(msg.sender==recipient_hospital);     //Seul l'hopital du receveur peut utiliser la fonction d'ajout
 
-        require(bytes(_first_name).length > 0);
-        require(bytes(_last_name).length > 0);
-        require(bytes(_blood_type).length > 0);
-        require(bytes(_height).length > 0);
-        require(bytes(_weight).length > 0);
-        require(bytes(_age).length > 0);
-        require(bytes(_organ_type).length > 0);
-        require(bytes(_id).length > 0);
-        require(bytes(_hospital_location).length > 0);
-        require(bytes(_recipient_date).length > 0);
-        require(bytes(_state).length > 0);
+        require(bytes(_firstname).length > 0);
+        require(bytes(_lastname).length > 0);
+        require(bytes(_bloodtype).length > 0);
+        require(bytes(_organtype).length > 0);
+        require(bytes(_hospitallocation).length > 0);
 
 
 
         //On demande à la procurement organization si le patient est éligible
-        string memory _status = validateRecipient(Recipient(_id, _first_name, _last_name, _blood_type, _age, _weight, _height, _organ_type, _hospital_location, _recipient_date, state)); 
+        uint _status = validateRecipient(Recipient(_id, _firstname, _lastname, _bloodtype, _age, _weight, _height, _organtype, _hospitallocation, _recipientdate, _state)); 
 
 
         
         //S'il est éligible, il est inscrit dans le système
         if(_status==1) {
-            recipients[recipientscounter] = Recipient(_id, _first_name, _last_name, _blood_type, _age, _weight, _height, _organ_type, _hospital_location, _recipient_date, _state);
+            recipients[recipientsCounter] = Recipient(_id, _firstname, _lastname, _bloodtype, _age, _weight, _height, _organtype, _hospitallocation, _recipientdate, _state);
             recipientsCounter++;
         }
 
@@ -111,30 +105,26 @@ contract DonorRecipientMatch {
         
     }
     
-    function addDonor(uint memory _id, string memory _first_name, string memory _last_name, string memory _blood_type, uint memory _age, uint memory _weight, uint memory _height, string _organ_type, string _hospital_location, uint _donor_date) public {
+    function addDonor(uint _id, string memory _firstname, string memory _lastname, string memory _bloodtype, uint _age, uint _weight, uint _height, string memory _organtype, string memory _hospitallocation, uint _donordate) public {
         
-        require(msg.sender==donor_hospital);     //Seul l'hopital du receveur peut utiliser la fonction d'ajout
+        //require(msg.sender==donor_hospital);     //Seul l'hopital du receveur peut utiliser la fonction d'ajout
 
-        require(bytes(_first_name).length > 0);
-        require(bytes(_last_name).length > 0);
-        require(bytes(_blood_type).length > 0);
-        require(bytes(_height).length > 0);
-        require(bytes(_weight).length > 0);
-        require(bytes(_age).length > 0);
-        require(bytes(_organ_type).length > 0);
-        require(bytes(_id).length > 0);
-        require(bytes(_hospital_location).length > 0);
-        require(bytes(_donor_date).length > 0);
+        require(bytes(_firstname).length > 0);
+        require(bytes(_lastname).length > 0);
+        require(bytes(_bloodtype).length > 0);
+        require(bytes(_organtype).length > 0);
+        require(bytes(_hospitallocation).length > 0);
+      
 
 
         //On demande à la procurement organization si le patient est éligible
-        string memory _status = validateDonor(Donor(_id, _first_name, _last_name, _blood_type, _age, _weight, _height, _organ_type, _hospital_location, _donor_date)); 
+        uint _status = validateDonor(Donor(_id, _firstname, _lastname, _bloodtype, _age, _weight, _height, _organtype, _hospitallocation, _donordate)); 
 
 
         
         //S'il est éligible, il est inscrit dans le système
         if(_status==1) {
-            donors[donorsCounter] = Donor(_id, _first_name, _last_name, _blood_type, _age, _weight, _height, _organ_type, _hospital_location, _donor_date);
+            donors[donorsCounter] = Donor(_id, _firstname, _lastname, _bloodtype, _age, _weight, _height, _organtype, _hospitallocation, _donordate);
             donorsCounter++;
         }
 
@@ -184,9 +174,9 @@ contract DonorRecipientMatch {
         uint n = matches.length;
         for (uint i = 0; i < n - 1; i++) {
             for (uint j = 0; j < n - i - 1; j++) {
-                if (matches[j].recipientDate < matches[j + 1].recipientDate) {
+                if (matches[j].recipient_date < matches[j + 1].recipient_date) {
                     swap(matches, j, j + 1);
-                } else if (matches[j].recipientDate == matches[j + 1].recipientDate) {
+                } else if (matches[j].recipient_date == matches[j + 1].recipient_date) {
                     if (matches[j].state < matches[j + 1].state) {
                         swap(matches, j, j + 1);
                     }
@@ -205,9 +195,9 @@ contract DonorRecipientMatch {
 
 
     //Fonction appelable par le procurement organization pour trouver des receveurs potentiels étant donné un donneur
-    function match(uint donorId) public view returns(Recipient[] memory) {
+    function matchAlgo(uint donorId) public returns(Recipient[] memory) {
 
-        require(msg.sender==procurement_organization)
+        //require(msg.sender==procurement_organization)
 
         Recipient[] memory matches = new Recipient[](recipientsCounter);
         uint matchCount=0;
