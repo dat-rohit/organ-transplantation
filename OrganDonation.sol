@@ -8,7 +8,7 @@ pragma solidity ^0.6.1;
 contract DonorRecipientMatch {
 
     uint public recipientsCounter=0;      //Compteur: nombre de receveurs inscrits dans le système
-    uint public donorsCounter=0;          //Compteur: nombre de doneurs inscrits dans le système
+    uint public donorsCounter=0;          //Compteur: nombre de donneurs inscrits dans le système
 
     mapping(uint => Recipient) public recipients;
     mapping(uint => Donor) public donors;
@@ -152,6 +152,7 @@ contract DonorRecipientMatch {
 
 
 
+    //Algorithme de selection des receveurs potentiels
     function compare(Donor memory d, Recipient memory r) internal pure returns (bool) {
         if (keccak256(bytes(d.blood_type)) != keccak256(bytes(r.blood_type))) {
             // Blood types don't match
@@ -178,8 +179,35 @@ contract DonorRecipientMatch {
     }
 
 
+    //Tri des receveurs potentiels du plus prioritaire au moins prioritaire
+     function sort(Recipient[] memory matches) internal pure {
+        uint n = matches.length;
+        for (uint i = 0; i < n - 1; i++) {
+            for (uint j = 0; j < n - i - 1; j++) {
+                if (matches[j].recipientDate < matches[j + 1].recipientDate) {
+                    swap(matches, j, j + 1);
+                } else if (matches[j].recipientDate == matches[j + 1].recipientDate) {
+                    if (matches[j].state < matches[j + 1].state) {
+                        swap(matches, j, j + 1);
+                    }
+                }
+            }
+        }
+    }
 
+    //Fonction auxiliaire pour échanger 2 elements d'un tableau
+    function swap(Recipient[] memory arr, uint i, uint j) internal pure {
+        Recipient memory temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+
+
+    //Fonction appelable par le procurement organization pour trouver des receveurs potentiels étant donné un donneur
     function match(uint donorId) public view returns(Recipient[] memory) {
+
+        require(msg.sender==procurement_organization)
 
         Recipient[] memory matches = new Recipient[](recipientsCounter);
         uint matchCount=0;
@@ -197,6 +225,7 @@ contract DonorRecipientMatch {
             mstore(matches, matchCount)
         }
 
+        sort(matches);
         return matches;
 
     }
