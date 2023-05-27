@@ -1,6 +1,7 @@
 // pragma experimental ABIEncoderV2
 //SPDX-License-Identifier: <SPDX-License>
 pragma solidity ^0.6.1;
+pragma experimental ABIEncoderV2;
 
 //todo: fonction processus de matching
 //todo: interface simple connecté
@@ -65,7 +66,7 @@ contract DonorRecipientMatch {
 
     }
 
-    function validateRecipient(Donor memory _recipient) public pure returns(uint) {
+    function validateRecipient(Recipient memory _recipient) public pure returns(uint) {
 
         //require(msg.sender==procurement_organization);   //Seul l'organisation chargé du matching donneur-receveur peut valider le patient en tant que receveur potentiel
 
@@ -132,13 +133,13 @@ contract DonorRecipientMatch {
         
     }
 
-    function getDonor(uint _index) public view returns (string memory, string memory, string memory, string memory, string memory, string memory, string memory) {
-        return (donors[_index].first_name, donors[_index].last_name, donors[_index].age, donors[_index].blood_type, donors[_index].height, donors[_index].weight, donors[_index].organ_type);
-    }
-
-    function getRecipient(uint _index) public view returns (string memory, string memory, string memory, string memory, string memory, string memory, string memory) {
-        return (recipients[_index].first_name, recipients[_index].last_name, recipients[_index].age, recipients[_index].blood_type, recipients[_index].height, recipients[_index].weight, recipients[_index].organ_type);
-    }
+ //   function getDonor(uint _index) public view returns (string memory, string memory, string memory, string memory, string memory, string memory, string memory) {
+//     return (donors[_index].first_name, donors[_index].last_name, donors[_index].age, donors[_index].blood_type, donors[_index].height, donors[_index].weight, donors[_index].organ_type);
+//    }
+//
+//    function getRecipient(uint _index) public view returns (string memory, string memory, string memory, string memory, string memory, string memory, string memory) {
+//        return (recipients[_index].first_name, recipients[_index].last_name, recipients[_index].age, recipients[_index].blood_type, recipients[_index].height, recipients[_index].weight, recipients[_index].organ_type);
+//    }
 
 
 
