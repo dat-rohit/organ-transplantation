@@ -144,26 +144,27 @@ contract DonorRecipientMatch {
 
 
     //Algorithme de selection des receveurs potentiels
-    function compare(Donor memory d, Recipient memory r) internal pure returns (bool) {
-        if (keccak256(bytes(d.blood_type)) != keccak256(bytes(r.blood_type))) {
+    function compare(Donor memory d, Recipient memory r) public pure returns (bool) {
+        uint fzefbool=8;
+        //if (keccak256(abi.encodePacked((d.blood_type))) == keccak256(abi.encodePacked((r.blood_type)))) {
             // Blood types don't match
-            return false;
-        }
+            //return 2;
+        //}
 
         if (d.age < r.age-10 || r.age+10<d.age) {
             // age du donneur trop loin de celui du receveur
-            return false;
+            return true;
         }
 
         if (d.weight < r.weight-20 || d.weight > r.weight + 20) {
             // Poids du donneur trop loin de celui du receveur
-            return false;
+            return true;
         }
 
-        if (keccak256(bytes(d.organ_type)) != keccak256(bytes(r.organ_type))) {
+        //if (keccak256(abi.encodePacked((d.organ_type))) != keccak256(abi.encodePacked((r.organ_type)))) {
             // Organ types don't match
-            return false;
-        }
+          //  return 5;
+        //}
 
         // All attributes match, it's a potential match
         return true;
@@ -196,29 +197,29 @@ contract DonorRecipientMatch {
 
 
     //Fonction appelable par le procurement organization pour trouver des receveurs potentiels étant donné un donneur
-    function matchAlgo(uint donorId) public returns(Recipient[] memory) {
+    function matchAlgo(uint donorId) public view returns(Recipient[] memory) {
 
         //require(msg.sender==procurement_organization)
 
         Recipient[] memory matches = new Recipient[](recipientsCounter);
         uint matchCount=0;
+        uint verif=0;
 
         for (uint i = 0; i < recipientsCounter; i++) {
             Recipient memory recipient = recipients[i];
+            verif=7;
+
 
             if (compare(donors[donorId], recipient)) {
                 matches[matchCount] = recipient;
                 matchCount++;
+                //verif=15;
             }
         }
 
-        assembly {
-            mstore(matches, matchCount)
-        }
 
-        sort(matches);
         return matches;
-
+        
     }
 
 
